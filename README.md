@@ -175,11 +175,8 @@ This project helps you learn:
 
 4. Run CI/CD pipelines in GitLab for each microservice repo.
 
-5. Deploy via Helm repo (triggered automatically).
+5. Deploy via Helm repo (triggered automatically)
 
-## 🎥 Video Walkthrough
 
-📺 *A detailed step-by-step walkthrough is available on my [YouTube Channel](https://youtube.com/@alausaseun).*
-*(Link will be updated once the video is published.)*
 
 

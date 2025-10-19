@@ -215,7 +215,7 @@ jobs:
       #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       # ==============================================================
-      # 📦 Upload artifacts
+      # Upload artifacts
       # ==============================================================
 
       - name: Upload test results
@@ -254,4 +254,3 @@ jobs:
           docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$TAG ${{ inputs.build_context }} -f ${{ inputs.dockerfile_path }}
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$TAG
-
