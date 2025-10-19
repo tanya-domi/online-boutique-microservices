@@ -175,6 +175,8 @@ This project helps you learn:
 
 4. Run CI/CD pipelines in GitLab for each microservice repo.
 
-5. Deploy via Helm repo (triggered automatically).
+5. Deploy via Helm repo (triggered automatically)
+
+
 
 
