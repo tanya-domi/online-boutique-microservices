@@ -1,0 +1,34 @@
+name: CheckoutService CI/CD
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+    paths:
+      - 'checkoutservice/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'checkoutservice/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: checkoutservice
+      dockerfile_path: checkoutservice/Dockerfile
+      build_context: checkoutservice
+      image_name: ghcr.io/${{ github.repository_owner }}/checkoutservice
+      language: go
+    secrets: inherit
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: checkoutservice
+      image_name: ghcr.io/myorg/checkoutservice
+    secrets: inherit

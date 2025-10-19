@@ -1,0 +1,6 @@
+dependencies:
+- name: online-boutique-common
+  repository: file://../../online-boutique-common
+  version: 0.1.0
+digest: sha256:4628c7ec90362469becab3a63fc9413cad57a96093b69b4c983aa0992e891bb2
+generated: "2025-10-13T20:57:42.337367853+02:00"

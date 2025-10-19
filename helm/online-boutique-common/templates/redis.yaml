@@ -1,0 +1,63 @@
+{{- define "common.deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentName }}
+  labels:
+    app: {{ .Values.appLabel }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.appLabel }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appLabel }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      securityContext: {{ .Values.securityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.containerName }}
+          securityContext: {{ .Values.containerSecurityContext | nindent 10 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          readinessProbe:
+            periodSeconds: 5
+            tcpSocket:
+              port: {{ .Values.port }}
+          livenessProbe:
+            periodSeconds: 5
+            tcpSocket:
+              port: {{ .Values.port }}
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+{{- end -}}
+
+---
+{{- define "common.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.serviceName }}
+  labels:
+    app: {{ .Values.appLabel }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ .Values.appLabel }}
+  ports:
+    - name: tcp-redis
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}

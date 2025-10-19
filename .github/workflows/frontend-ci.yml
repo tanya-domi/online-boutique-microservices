@@ -1,0 +1,34 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: frontend
+      dockerfile_path: frontend/Dockerfile
+      build_context: frontend
+      image_name: ghcr.io/${{ github.repository_owner }}/frontend
+      language: go
+    secrets: inherit
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: frontend
+      image_name: ghcr.io/myorg/frontend
+    secrets: inherit

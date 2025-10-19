@@ -1,0 +1,34 @@
+name: RecommendationService CI/CD
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+    paths:
+      - 'recommendationservice/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'recommendationservice/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: recommendationservice
+      dockerfile_path: recommendationservice/Dockerfile
+      build_context: recommendationservice
+      image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
+      language: python
+    secrets: inherit
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: recommendationservice
+      image_name: ghcr.io/myorg/recommendationservice
+    secrets: inherit

@@ -1,0 +1,34 @@
+name: CurrencyService CI/CD
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+    paths:
+      - 'currencyservice/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'currencyservice/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: currencyservice
+      dockerfile_path: currencyservice/Dockerfile
+      build_context: currencyservice
+      image_name: ghcr.io/${{ github.repository_owner }}/currencyservice
+      language: node
+    secrets: inherit
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: currencyservice
+      image_name: ghcr.io/myorg/currencyservice
+    secrets: inherit

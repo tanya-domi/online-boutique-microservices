@@ -1,0 +1,34 @@
+name: EmailService CI/CD
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+    paths:
+      - 'emailservice/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'emailservice/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: emailservice
+      dockerfile_path: emailservice/Dockerfile
+      build_context: emailservice
+      image_name: ghcr.io/${{ github.repository_owner }}/emailservice
+      language: python
+    secrets: inherit
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: emailservice
+      image_name: ghcr.io/myorg/emailservice
+    secrets: inherit

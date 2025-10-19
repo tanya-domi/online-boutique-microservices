@@ -1,0 +1,22 @@
+{{- define "common.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.configMapName }}
+data:
+  PRODUCT_CATALOG_SERVICE_ADDR: "{{ .Values.global.services.productCatalog }}"
+  CURRENCY_SERVICE_ADDR: "{{ .Values.global.services.currency }}"
+  PAYMENT_SERVICE_ADDR: "{{ .Values.global.services.paymentservice }}"
+  EMAIL_SERVICE_ADDR: "{{ .Values.global.services.emailservice }}"
+  CART_SERVICE_ADDR: "{{ .Values.global.services.cart }}"
+  RECOMMENDATION_SERVICE_ADDR: "{{ .Values.global.services.recommendation }}"
+  SHIPPING_SERVICE_ADDR: "{{ .Values.global.services.shipping }}"
+  CHECKOUT_SERVICE_ADDR: "{{ .Values.global.services.checkout }}"
+  AD_SERVICE_ADDR: "{{ .Values.global.services.ad }}"
+  SHOPPING_ASSISTANT_SERVICE_ADDR: "{{ .Values.global.services.assistant }}"
+  REDIS_ADDR: "{{ .Values.global.redis.address }}"
+  ENABLE_PROFILER: "{{ .Values.global.services.enableProfiler }}"
+{{- end -}}
+
+
+
