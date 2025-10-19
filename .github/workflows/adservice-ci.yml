@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/ci-reusable.yml
     with:
       service_name: adservice
-      dockerfile_path: online-boutique/adservice/Dockerfile
+      dockerfile_path: adservice/Dockerfile
       build_context: adservice
       image_name: ghcr.io/${{ github.repository_owner }}/adservice
       language: java
