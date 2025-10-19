@@ -27,7 +27,7 @@ jobs:
   dev-deploy:
     if: startsWith(github.ref, 'refs/heads/feature/')
     needs: build
-    uses: ./.github/workflows/cd-reusable.yml@main
+    uses: ./.github/workflows/cd-reusable.yml
     with:
       service_name: loadgenerator
       image_name: ghcr.io/${{ github.repository_owner }}/loadgenerator
