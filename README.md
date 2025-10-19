@@ -20,10 +20,6 @@ It is part of a tutorial series I recorded for my **YouTube channel** (📺 link
 - **Authentication**: GitLab pipelines authenticate with AWS via **OIDC** (no static keys).
 - **Add-ons**: AWS Load Balancer Controller and kube-prometheus-stack installed with `eks-addons`.
 
-## 🏗 Architecture
-
-The architecture of the deployment is documented in the [`architecture`](https://github.com/seunayolu/online-boutique/tree/main/architecture) folder.  
-
 ### Architecture Diagram
 ![Online Boutique Architecture](https://github.com/seunayolu/online-boutique/blob/main/architecture/online-boutique-arch.png?raw=true)
 
@@ -47,11 +43,11 @@ Key components include:
 
 ## ⚙️ CI/CD Workflows
 
-Each microservice project contains a `.gitlab-ci.yml` pipeline with the following flow:
+Each microservice project contains a `.github-ci.yml` pipeline with the following flow:
 
 1. **Build & Push**  
    - Build Docker image.  
-   - Push to GitLab Container Registry.
+   - Push to Github Container Registry.
 
 2. **Update Helm Repo**  
    - Clone Helm repo.  
@@ -67,23 +63,16 @@ Each microservice project contains a `.gitlab-ci.yml` pipeline with the followin
 4. **SonarCloud Scanning**  
    - Static code analysis integrated via SonarCloud.
 
-### Example Workflow Rule (Helm repo)
-```yaml
-workflow:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/boutique-helm" && $CI_PIPELINE_SOURCE == "pipeline"'
-```
-
 ## 🚀 Deployment Steps
 
 1. **Setup OIDC for GitLab → AWS**
 
-   * Terraform configuration in [`oidc-setup`](https://github.com/seunayolu/online-boutique/tree/main/oidc-setup).
+   * Terraform configuration in [`oidc-setup`]
    * Removes the need for static IAM access keys.
 
 2. **Deploy EKS Infrastructure**
 
-   * Terraform code in [`eksinfra`](https://github.com/seunayolu/online-boutique/tree/main/eksinfra).
+   * Terraform code in [`eksinfra`]
    * Uses:
 
      * `terraform-aws-eks` module
@@ -106,13 +95,12 @@ workflow:
 
 This project helps you learn:
 
-1. How to implement **GitLab polyrepo deployments**.
+1. How to implement **polyglot monorepo deployments**.
 2. CI/CD for multiple programming languages (C#, Go, NodeJS, Python, Java).
-3. How to use **GitLab trigger functions** for downstream pipelines.
-4. Leveraging **Helm** for Kubernetes deployments in CI/CD.
-5. Managing inter-repo updates (one repo updates another repo’s pipeline).
-6. Using **eks-addons** to install Kubernetes tools.
-7. Configuring SSL access via ALB and Load Balancer Controller.
+3. Leveraging **Helm** for Kubernetes deployments in CI/CD.
+4. Managing inter-repo updates (one repo updates another repo’s pipeline).
+5. Using **eks-addons** to install Kubernetes tools.
+6. Configuring SSL access via ALB and Load Balancer Controller.
 
 ## 🛠 Tech Stack & References
 
@@ -154,28 +142,6 @@ This project helps you learn:
 ### Helm
 
 * [ArtifactHub](https://artifacthub.io/)
-
-## 🖥 How to Reproduce
-
-1. Clone the repo:
-
-   ```bash
-   git clone https://github.com/seunayolu/online-boutique.git
-   ```
-
-2. Setup Terraform backends and initialize:
-
-   ```bash
-   cd eksinfra
-   terraform init
-   terraform apply
-   ```
-
-3. Configure GitLab OIDC → AWS roles using the `oidc-setup` folder.
-
-4. Run CI/CD pipelines in GitLab for each microservice repo.
-
-5. Deploy via Helm repo (triggered automatically)
 
 
 
