@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/ci-reusable.yml
+    uses: online-boutique/.github/workflows/ci-reusable.yml
     with:
       service_name: loadgenerator
       dockerfile_path: loadgenerator/Dockerfile
