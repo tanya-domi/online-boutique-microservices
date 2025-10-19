@@ -17,9 +17,8 @@ jobs:
   build:
     uses: ./.github/workflows/ci-reusable.yml
     with:
-      work-dir: "online-boutique/checkoutservice"
       service_name: checkoutservice
-      dockerfile_path: online-boutique/checkoutservice/Dockerfile
+      dockerfile_path: checkoutservice/Dockerfile
       build_context: checkoutservice
       image_name: ghcr.io/${{ github.repository_owner }}/checkoutservice
       language: go

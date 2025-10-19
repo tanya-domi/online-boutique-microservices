@@ -215,7 +215,7 @@ jobs:
       #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       # ==============================================================
-      # 📦 Upload artifacts
+      # Upload artifacts
       # ==============================================================
 
       - name: Upload test results
