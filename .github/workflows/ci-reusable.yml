@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      packages: read
       id-token: none
 
     steps:
