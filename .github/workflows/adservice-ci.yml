@@ -15,8 +15,8 @@ on:
 
 permissions:
   contents: read
-  packages: write
-  id-token: write
+  packages: read
+  id-token: none
 
 jobs:
   build:
