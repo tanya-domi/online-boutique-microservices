@@ -30,20 +30,21 @@ jobs:
     secrets: inherit
 
   dev-deploy:
-    if: startsWith(github.ref, 'refs/heads/feature/')
+    if: startsWith(github.ref_name, 'feature/')
     needs: build
     uses: ./.github/workflows/cd-reusable.yml
     with:
       service_name: adservice
       image_name: ghcr.io/${{ github.repository_owner }}/adservice
+      environment: dev
     secrets: inherit
 
   prod-deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref_name == 'main' && github.event_name == 'push'
     needs: build
     uses: ./.github/workflows/cd-reusable.yml
     with:
       service_name: adservice
       image_name: ghcr.io/${{ github.repository_owner }}/adservice
+      environment: prod
     secrets: inherit
-  
