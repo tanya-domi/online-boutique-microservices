@@ -17,6 +17,11 @@ on:
       AWS_REGION:
         required: true
 
+permissions:
+  contents: read
+  packages: write
+  id-token: none
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
