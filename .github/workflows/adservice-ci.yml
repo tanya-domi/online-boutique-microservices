@@ -13,10 +13,10 @@ on:
     paths:
       - 'adservice/**'
 
-# permissions:
-#   contents: read
-#   packages: write
-#   id-token: write
+permissions:
+  contents: read
+  packages: write
+  id-token: write
 
 jobs:
   build:
