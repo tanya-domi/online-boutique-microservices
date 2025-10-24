@@ -31,16 +31,12 @@ on:
 jobs:
   build-test-scan:
     runs-on: ubuntu-latest
-    # permissions:
-    #   contents: read
-    #   packages: write
-    #   id-token: write
-
+ 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      #Setup language, cache dependencies, and run tests
+      # Setup language, cache dependencies, and run tests for workflows
   
       # --- Go ---
       - name: Setup Go
