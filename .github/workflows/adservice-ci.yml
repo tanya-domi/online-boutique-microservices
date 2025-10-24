@@ -13,6 +13,11 @@ on:
     paths:
       - 'adservice/**'
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 jobs:
   build:
     uses: ./.github/workflows/ci-reusable.yml
