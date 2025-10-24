@@ -31,10 +31,10 @@ on:
 jobs:
   build-test-scan:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      id-token: none
+    # permissions:
+    #   contents: read
+    #   packages: read
+    #   id-token: none
 
     steps:
       - name: Checkout code
