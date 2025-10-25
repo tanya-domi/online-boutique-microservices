@@ -1,51 +1,51 @@
-name: RecommendationService CI/CD
+# name: RecommendationService CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'recommendationservice/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'recommendationservice/**'#
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'recommendationservice/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'recommendationservice/**'#
 
-permissions:
-    id-token: write
-    pull-requests: write
-    statuses: write
-    actions: read
-    contents: read
+# permissions:
+#     id-token: write
+#     pull-requests: write
+#     statuses: write
+#     actions: read
+#     contents: read
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: recommendationservice
-      dockerfile_path: recommendationservice/Dockerfile
-      build_context: recommendationservice
-      image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
-      language: python
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: recommendationservice
+#       dockerfile_path: recommendationservice/Dockerfile
+#       build_context: recommendationservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
+#       language: python
+#     secrets: inherit
 
-  dev-deploy:
-    if: startsWith(github.ref, 'refs/heads/feature/')
-    needs: build
-    uses: ./.github/workflows/cd-reusable.yml
-    with:
-      service_name: recommendationservice
-      image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
-    secrets: inherit
+#   dev-deploy:
+#     if: startsWith(github.ref, 'refs/heads/feature/')
+#     needs: build
+#     uses: ./.github/workflows/cd-reusable.yml
+#     with:
+#       service_name: recommendationservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
+#     secrets: inherit
 
-  prod-deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: build
-    uses: ./.github/workflows/cd-reusable.yml
-    with:
-      service_name: recommendationservice
-      image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
-    secrets: inherit
+#   prod-deploy:
+#     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#     needs: build
+#     uses: ./.github/workflows/cd-reusable.yml
+#     with:
+#       service_name: recommendationservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
+#     secrets: inherit
 
