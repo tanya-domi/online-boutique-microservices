@@ -1,50 +1,50 @@
-# name: Frontend CI/CD
+name: Frontend CI/CD
 
-# on:
-#   push:
-#     branches:
-#       - 'feature/**'
-#       - main
-#     paths:
-#       - 'frontend/**'
-#   pull_request:
-#     branches:
-#       - main
-#     paths:
-#       - 'frontend/**'
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - main
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
 
-# permissions:
-#     id-token: write
-#     pull-requests: write
-#     statuses: write
-#     actions: read
-#     contents: read
+permissions:
+    id-token: write
+    pull-requests: write
+    statuses: write
+    actions: read
+    contents: read
 
-# jobs:
-#   build:
-#     uses: ./.github/workflows/ci-reusable.yml
-#     with:
-#       service_name: frontend
-#       dockerfile_path: frontend/Dockerfile
-#       build_context: frontend
-#       image_name: ghcr.io/${{ github.repository_owner }}/frontend
-#       language: go
-#     secrets: inherit
+jobs:
+  build:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: frontend
+      dockerfile_path: frontend/Dockerfile
+      build_context: frontend
+      image_name: ghcr.io/${{ github.repository_owner }}/frontend
+      language: go
+    secrets: inherit
 
-#   dev-deploy:
-#     if: startsWith(github.ref, 'refs/heads/feature/')
-#     needs: build
-#     uses: ./.github/workflows/cd-reusable.yml
-#     with:
-#       service_name: frontend
-#       image_name: ghcr.io/${{ github.repository_owner }}/frontend
-#     secrets: inherit
+  dev-deploy:
+    if: startsWith(github.ref, 'refs/heads/feature/')
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: frontend
+      image_name: ghcr.io/${{ github.repository_owner }}/frontend
+    secrets: inherit
 
-#   prod-deploy:
-#     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-#     needs: build
-#     uses: ./.github/workflows/cd-reusable.yml
-#     with:
-#       service_name: frontend
-#       image_name: ghcr.io/${{ github.repository_owner }}/frontend
-#     secrets: inherit
+  prod-deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    uses: ./.github/workflows/cd-reusable.yml
+    with:
+      service_name: frontend
+      image_name: ghcr.io/${{ github.repository_owner }}/frontend
+    secrets: inherit
