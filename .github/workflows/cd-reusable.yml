@@ -10,7 +10,8 @@ on:
         required: true
         type: string
       environment:
-        required: true
+        required: false
+        default: dev
         type: string
     secrets:
       AWS_ACCESS_KEY_ID:
@@ -26,9 +27,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Deploy ${{ inputs.service_name }} to ${{ inputs.environment }}
+      - name: Print deployment info
         run: |
           echo "Deploying ${{ inputs.service_name }} to ${{ inputs.environment }} environment"
+          echo "Using image: ${{ inputs.image_name }}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
