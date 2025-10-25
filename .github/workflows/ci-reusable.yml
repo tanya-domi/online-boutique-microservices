@@ -18,6 +18,9 @@ on:
       language:
         required: true
         type: string
+      tag:
+        required: true
+        type: string
     secrets:
       REGISTRY_USERNAME:
         required: true
