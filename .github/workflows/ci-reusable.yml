@@ -50,6 +50,10 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles(format('{0}/gradle-wrapper.properties', inputs.build_context)) }}
 
+      - name: Grant execute permission for Gradle wrapper
+        if: ${{ inputs.language == 'java' }}
+        run: chmod +x ${{ inputs.build_context }}/gradlew
+
       - name: Run Gradle tests
         if: ${{ inputs.language == 'java' }}
         run: |
