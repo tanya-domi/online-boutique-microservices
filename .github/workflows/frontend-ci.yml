@@ -1,28 +1,28 @@
-name: Frontend CI/CD
+# name: Frontend CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'frontend/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'frontend/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'frontend/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'frontend/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: frontend
-      dockerfile_path: frontend/Dockerfile
-      build_context: frontend
-      image_name: ghcr.io/${{ github.repository_owner }}/frontend
-      language: go
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: frontend
+#       dockerfile_path: frontend/Dockerfile
+#       build_context: frontend
+#       image_name: ghcr.io/${{ github.repository_owner }}/frontend
+#       language: go
+#     secrets: inherit
 
   # dev-deploy:
   #   if: startsWith(github.ref, 'refs/heads/feature/')

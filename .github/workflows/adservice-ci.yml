@@ -14,10 +14,11 @@ on:
       - 'adservice/**'
 
 permissions:
-  contents: read
-  packages: write
-  id-token: write
-
+    id-token: write
+    pull-requests: write
+    statuses: write
+    actions: read
+    contents: read
 jobs:
   build:
     uses: ./.github/workflows/ci-reusable.yml

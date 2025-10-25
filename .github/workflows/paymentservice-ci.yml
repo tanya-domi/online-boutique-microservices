@@ -1,28 +1,28 @@
-name: PaymentService CI/CD
+# name: PaymentService CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'paymentservice/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'paymentservice/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'paymentservice/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'paymentservice/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: paymentservice
-      dockerfile_path: paymentservice/Dockerfile
-      build_context: paymentservice
-      image_name: ghcr.io/${{ github.repository_owner }}/paymentservice
-      language: node
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: paymentservice
+#       dockerfile_path: paymentservice/Dockerfile
+#       build_context: paymentservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/paymentservice
+#       language: node
+#     secrets: inherit
 
   # dev-deploy:
   #   if: startsWith(github.ref, 'refs/heads/feature/')

@@ -1,28 +1,28 @@
-name: ShippingService CI/CD
+# name: ShippingService CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'shippingservice/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'shippingservice/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'shippingservice/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'shippingservice/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: shippingservice
-      dockerfile_path: shippingservice/Dockerfile
-      build_context: shippingservice
-      image_name: ghcr.io/${{ github.repository_owner }}/shippingservice
-      language: go
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: shippingservice
+#       dockerfile_path: shippingservice/Dockerfile
+#       build_context: shippingservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/shippingservice
+#       language: go
+#     secrets: inherit
 
   # dev-deploy:
   #   if: startsWith(github.ref, 'refs/heads/feature/')

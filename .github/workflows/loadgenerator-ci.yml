@@ -1,28 +1,28 @@
-name: LoadGenerator CI/CD
+# name: LoadGenerator CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'loadgenerator/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'loadgenerator/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'loadgenerator/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'loadgenerator/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: loadgenerator
-      dockerfile_path: loadgenerator/Dockerfile
-      build_context: loadgenerator
-      image_name: ghcr.io/${{ github.repository_owner }}/loadgenerator
-      language: python
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: loadgenerator
+#       dockerfile_path: loadgenerator/Dockerfile
+#       build_context: loadgenerator
+#       image_name: ghcr.io/${{ github.repository_owner }}/loadgenerator
+#       language: python
+#     secrets: inherit
 
   # dev-deploy:
   #   if: startsWith(github.ref, 'refs/heads/feature/')

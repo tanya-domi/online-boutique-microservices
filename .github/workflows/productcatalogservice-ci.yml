@@ -1,28 +1,28 @@
-name: ProductCatalogService CI/CD
+# name: ProductCatalogService CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'productcatalogservice/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'productcatalogservice/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'productcatalogservice/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'productcatalogservice/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: productcatalogservice
-      dockerfile_path: productcatalogservice/Dockerfile
-      build_context: productcatalogservice
-      image_name: ghcr.io/${{ github.repository_owner }}/productcatalogservice
-      language: go
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: productcatalogservice
+#       dockerfile_path: productcatalogservice/Dockerfile
+#       build_context: productcatalogservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/productcatalogservice
+#       language: go
+#     secrets: inherit
 
   # dev-deploy:
   #   if: startsWith(github.ref, 'refs/heads/feature/')

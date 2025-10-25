@@ -1,28 +1,28 @@
-name: CartService CI/CD
+# name: CartService CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'cartservice/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'cartservice/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'cartservice/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'cartservice/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: cartservice
-      dockerfile_path: cartservice/Dockerfile
-      build_context: cartservice
-      image_name: ghcr.io/${{ github.repository_owner }}/cartservice
-      language: dotnet
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: cartservice
+#       dockerfile_path: cartservice/Dockerfile
+#       build_context: cartservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/cartservice
+#       language: dotnet
+#     secrets: inherit
 
 #   dev-deploy:
 #     if: startsWith(github.ref, 'refs/heads/feature/')

@@ -1,28 +1,28 @@
-name: EmailService CI/CD
+# name: EmailService CI/CD
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'emailservice/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'emailservice/**'
+# on:
+#   push:
+#     branches:
+#       - 'feature/**'
+#       - main
+#     paths:
+#       - 'emailservice/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'emailservice/**'
 
-jobs:
-  build:
-    uses: ./.github/workflows/ci-reusable.yml
-    with:
-      service_name: emailservice
-      dockerfile_path: emailservice/Dockerfile
-      build_context: emailservice
-      image_name: ghcr.io/${{ github.repository_owner }}/emailservice
-      language: python
-    secrets: inherit
+# jobs:
+#   build:
+#     uses: ./.github/workflows/ci-reusable.yml
+#     with:
+#       service_name: emailservice
+#       dockerfile_path: emailservice/Dockerfile
+#       build_context: emailservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/emailservice
+#       language: python
+#     secrets: inherit
 
   # dev-deploy:
   #   if: startsWith(github.ref, 'refs/heads/feature/')
