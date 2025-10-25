@@ -7,11 +7,13 @@ on:
       - main
     paths:
       - 'adservice/**'
+      - '.github/workflows/**'
   pull_request:
     branches:
       - main
     paths:
       - 'adservice/**'
+      - '.github/workflows/**'
 
 permissions:
     id-token: write
