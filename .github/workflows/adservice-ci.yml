@@ -30,7 +30,7 @@ jobs:
       build_context: adservice
       image_name: ghcr.io/${{ github.repository_owner }}/adservice
       language: java
-      tag: ${{ github.sha }}
+      tag: v1.0.0 
     secrets: inherit
 
   # dev-deploy:
