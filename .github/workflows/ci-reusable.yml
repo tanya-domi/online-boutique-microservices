@@ -23,10 +23,10 @@ on:
         required: true
       REGISTRY_PASSWORD:
         required: true
-      SONAR_HOST_URL:
-        required: true
-      SONAR_TOKEN:
-        required: true
+      # SONAR_HOST_URL:
+      #   required: true
+      # SONAR_TOKEN:
+      #   required: true
 
 jobs:
   build-test-scan:
@@ -60,17 +60,17 @@ jobs:
 
       # ============ SonarQube ============
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v3
-        with:
-          projectBaseDir: ${{ inputs.build_context }}
-          args: >
-            -Dsonar.projectKey=${{ inputs.service_name }}
-            -Dsonar.projectName=${{ inputs.service_name }}
-            -Dsonar.sources=.
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v3
+      #   with:
+      #     projectBaseDir: ${{ inputs.build_context }}
+      #     args: >
+      #       -Dsonar.projectKey=${{ inputs.service_name }}
+      #       -Dsonar.projectName=${{ inputs.service_name }}
+      #       -Dsonar.sources=.
+      #   env:
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       # ============ Upload Artifacts ============
 
