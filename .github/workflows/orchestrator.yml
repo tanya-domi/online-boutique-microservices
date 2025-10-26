@@ -87,7 +87,6 @@ jobs:
       tag: docker-${{ github.run_id }}
     secrets: inherit
 
-
   paymentservice:
     uses: ./.github/workflows/ci-reusable.yml
     with:
