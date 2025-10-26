@@ -84,7 +84,7 @@ jobs:
           retention-days: 7
 
           #.NET
-      - name: Setup .NET
+             - name: Setup .NET
         if: ${{ inputs.language == 'dotnet' }}
         uses: actions/setup-dotnet@v4
         with:
@@ -95,7 +95,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('${{ inputs.build_context }}/**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles(format('{0}/**/*.csproj', inputs.build_context)) }}
 
       - name: Restore and Build .NET project
         if: ${{ inputs.language == 'dotnet' }}
@@ -114,30 +114,31 @@ jobs:
         if: ${{ inputs.language == 'dotnet' }}
         run: |
           cd ${{ inputs.build_context }}
-          dotnet test --configuration Release --logger trx --results-directory ./TestResults
+          mkdir -p TestResults
+          dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
 
       - name: Convert TRX to JUnit XML
         if: ${{ inputs.language == 'dotnet' }}
         run: |
-          trx2junit ./TestResults/*.trx
+          cd ${{ inputs.build_context }}
+          if compgen -G "./TestResults/*.trx" > /dev/null; then
+            trx2junit ./TestResults/*.trx
+          else
+            echo "No .trx files found in ./TestResults, skipping conversion."
+          fi
 
       - name: Upload Test Results
         if: ${{ inputs.language == 'dotnet' }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: ${{ inputs.service_name }}-test-results
           path: |
-            ./TestResults/*.xml
-            ./TestResults/
+            ${{ inputs.build_context }}/TestResults/*.xml
+            ${{ inputs.build_context }}/TestResults/*.trx
+          retention-days: 7
 
-      - name: Push to GitHub Packages
-        if: ${{ inputs.language == 'dotnet' }}
-        run: |
-          dotnet nuget push MyPackage.nupkg \
-            --api-key ${{ secrets.GITHUB_TOKEN }} \
-            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
-      # --- Node.js ---
+     # Setup Node.js environment
       - name: Setup Node.js and .npmrc
         if: ${{ inputs.language == 'node' }}
         uses: actions/setup-node@v4
@@ -151,17 +152,22 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('${{ inputs.build_context }}/package-lock.json') }}
-      
+          key: ${{ runner.os }}-npm-${{ hashFiles(format('{0}/package-lock.json', inputs.build_context)) }}
+
       - name: Install Dependencies
         if: ${{ inputs.language == 'node' }}
-        run: npm ci
+        run: |
+          cd ${{ inputs.build_context }}
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Run Node.js tests
         if: ${{ inputs.language == 'node' }}
         run: |
           cd ${{ inputs.build_context }}
-          npm ci
           npm test -- --coverage || echo "No tests found"
           mkdir -p ../artifacts/${{ inputs.service_name }}
           cp -r coverage ../artifacts/${{ inputs.service_name }}/ || true
@@ -194,12 +200,13 @@ jobs:
           mkdir -p ../artifacts/${{ inputs.service_name }}
           cp -r .coverage ../artifacts/${{ inputs.service_name }}/ || true
 
-      - name: Publish to PyPI
-        if: ${{ inputs.language == 'python' }}
-        run: |
-          cd ${{ inputs.build_context }}
-          python setup.py sdist bdist_wheel
-          twine upload dist/* --username __token__ --password ${{ secrets.PYPI_TOKEN }}
+      # - name: Publish to PyPI
+      #   if: ${{ inputs.language == 'python' && inputs.is_library == 'true' }}
+      #   run: |
+      #     cd ${{ inputs.build_context }}
+      #     python setup.py sdist bdist_wheel
+      #     twine upload dist/* --username __token__ --password ${{ secrets.PYPI_TOKEN }}
+
 
       # --- Go ---
       - name: Setup Go
@@ -213,6 +220,7 @@ jobs:
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('${{ inputs.build_context }}/go.sum') }}
+
       - name: Run Go tests
         if: ${{ inputs.language == 'go' }}
         run: |
@@ -221,16 +229,16 @@ jobs:
           mkdir -p ../artifacts/${{ inputs.service_name }}
           cp coverage.out ../artifacts/${{ inputs.service_name }}
 
-      - name: Publish to GitHub Packages
+      - name: Build Go binary
         if: ${{ inputs.language == 'go' }}
         run: |
           cd ${{ inputs.build_context }}
-          go build -o mypackage ./...
-          echo "Publishing package..."
-          go list -m ./... | xargs -I {} go get {}
-          go publish --token ${{ secrets.GITHUB_TOKEN }} --path .
-      
-######################################################
+          go mod tidy
+          go build -o app .
+          mkdir -p ../artifacts/${{ inputs.service_name }}
+          cp app ../artifacts/${{ inputs.service_name }}/
+
+       # Build and push Docker image
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
