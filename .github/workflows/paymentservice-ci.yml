@@ -1,12 +1,12 @@
 name: PaymentService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'paymentservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'paymentservice/**'
   pull_request:
     branches:
       - main

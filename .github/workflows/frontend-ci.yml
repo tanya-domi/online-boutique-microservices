@@ -1,12 +1,12 @@
 name: Frontend CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'frontend/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'frontend/**'
   pull_request:
     branches:
       - main

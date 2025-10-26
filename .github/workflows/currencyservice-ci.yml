@@ -1,12 +1,12 @@
 name: CurrencyService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'currencyservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'currencyservice/**'
   pull_request:
     branches:
       - main

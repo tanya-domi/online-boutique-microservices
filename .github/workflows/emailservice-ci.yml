@@ -1,12 +1,12 @@
 name: EmailService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'emailservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'emailservice/**'
   pull_request:
     branches:
       - main

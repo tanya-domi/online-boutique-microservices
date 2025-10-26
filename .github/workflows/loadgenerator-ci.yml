@@ -1,12 +1,12 @@
 name: LoadGenerator CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'loadgenerator/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'loadgenerator/**'
   pull_request:
     branches:
       - main

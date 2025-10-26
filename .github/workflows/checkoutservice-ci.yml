@@ -1,12 +1,12 @@
 name: CheckoutService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'checkoutservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'checkoutservice/**'
   pull_request:
     branches:
       - main

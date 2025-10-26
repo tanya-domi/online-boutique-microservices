@@ -1,11 +1,13 @@
 name: Build All Services
 
 on:
-  workflow_dispatch: 
+  push:
+    branches:
+      - 'feature/**'
+      - main
   pull_request:
     branches:
       - main
-
 jobs:
   adservice:
     uses: ./.github/workflows/ci-reusable.yml

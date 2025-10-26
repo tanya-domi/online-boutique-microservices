@@ -1,13 +1,13 @@
 name: AdService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'adservice/**'
-      - '.github/workflows/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'adservice/**'
+    #   - '.github/workflows/**'
   pull_request:
     branches:
       - main

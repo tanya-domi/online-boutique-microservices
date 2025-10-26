@@ -1,12 +1,12 @@
 name: ProductCatalogService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'productcatalogservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'productcatalogservice/**'
   pull_request:
     branches:
       - main

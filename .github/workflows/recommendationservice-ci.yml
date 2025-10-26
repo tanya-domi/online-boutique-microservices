@@ -1,12 +1,12 @@
 name: RecommendationService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'recommendationservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'recommendationservice/**'
   pull_request:
     branches:
       - main

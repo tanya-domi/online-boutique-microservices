@@ -1,12 +1,12 @@
 name: ShippingService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'shippingservice/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'shippingservice/**'
   pull_request:
     branches:
       - main
