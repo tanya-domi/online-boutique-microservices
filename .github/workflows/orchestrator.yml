@@ -2,8 +2,9 @@ name: Build All Services
 
 on:
   workflow_dispatch: 
-#   schedule:
-#     - cron: "0 3 * * *" 
+  pull_request:
+    branches:
+      - main
 
 jobs:
   adservice:
