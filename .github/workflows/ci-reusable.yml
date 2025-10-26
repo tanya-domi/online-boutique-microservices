@@ -247,7 +247,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.build_context }}
-          file: ./${{ inputs.dockerfile_path }}
+          file: ${{ inputs.build_context }}/src/Dockerfile   #./${{ inputs.dockerfile_path }}
           tags: |
             ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.service_name }}:latest
             ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.service_name }}:${{ inputs.tag }}
