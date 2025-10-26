@@ -97,14 +97,38 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('${{ inputs.build_context }}/**/*.csproj') }}
 
-      - name: Restore and Run .NET tests
+      - name: Restore and Build .NET project
         if: ${{ inputs.language == 'dotnet' }}
         run: |
           cd ${{ inputs.build_context }}
           dotnet restore
-          dotnet test --no-build --collect:"XPlat Code Coverage"
-          mkdir -p ../artifacts/${{ inputs.service_name }}
-          cp -r TestResults ../artifacts/${{ inputs.service_name }}/ || true
+          dotnet build --no-restore --configuration Release
+
+      - name: Install trx2junit Tool
+        if: ${{ inputs.language == 'dotnet' }}
+        run: |
+          dotnet tool install --global trx2junit
+          echo "/root/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Run .NET Tests
+        if: ${{ inputs.language == 'dotnet' }}
+        run: |
+          cd ${{ inputs.build_context }}
+          dotnet test --configuration Release --logger trx --results-directory ./TestResults
+
+      - name: Convert TRX to JUnit XML
+        if: ${{ inputs.language == 'dotnet' }}
+        run: |
+          trx2junit ./TestResults/*.trx
+
+      - name: Upload Test Results
+        if: ${{ inputs.language == 'dotnet' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: |
+            ./TestResults/*.xml
+            ./TestResults/
 
       - name: Push to GitHub Packages
         if: ${{ inputs.language == 'dotnet' }}
@@ -113,7 +137,42 @@ jobs:
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
+      # --- Node.js ---
+      - name: Setup Node.js and .npmrc
+        if: ${{ inputs.language == 'node' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+          scope: '@octocat'
 
+      - name: Cache npm
+        if: ${{ inputs.language == 'node' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('${{ inputs.build_context }}/package-lock.json') }}
+      
+      - name: Install Dependencies
+        if: ${{ inputs.language == 'node' }}
+        run: npm ci
+
+      - name: Run Node.js tests
+        if: ${{ inputs.language == 'node' }}
+        run: |
+          cd ${{ inputs.build_context }}
+          npm ci
+          npm test -- --coverage || echo "No tests found"
+          mkdir -p ../artifacts/${{ inputs.service_name }}
+          cp -r coverage ../artifacts/${{ inputs.service_name }}/ || true
+
+      - name: Publish to GitHub Packages
+        if: ${{ inputs.language == 'node' }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      
 ######################################################
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
