@@ -248,7 +248,6 @@ jobs:
         with:
           context: ${{ inputs.build_context }}
           file: ./${{ inputs.dockerfile_path }}
-          push: true
           tags: |
             ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.service_name }}:latest
             ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.service_name }}:${{ inputs.tag }}
