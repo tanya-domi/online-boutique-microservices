@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/ci-reusable.yml
     with:
       service_name: cartservice
-      dockerfile_path: cartservice/Dockerfile
+      dockerfile_path: src/Dockerfile
       build_context: cartservice
       image_name: ghcr.io/${{ github.repository_owner }}/cartservice
       language: dotnet
