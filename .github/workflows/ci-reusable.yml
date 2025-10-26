@@ -172,14 +172,6 @@ jobs:
           mkdir -p ../artifacts/${{ inputs.service_name }}
           cp -r coverage ../artifacts/${{ inputs.service_name }}/ || true
 
-      - name: Publish to GitHub Packages
-        if: ${{ inputs.language == 'node' }}
-        run: |
-          cd ${{ inputs.build_context }}
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
       # --- Python ---
       - name: Setup Python
@@ -255,7 +247,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.build_context }}
-          file: ${{ inputs.dockerfile_path }}
+          file: ./${{ inputs.dockerfile_path }}
           push: true
           tags: |
             ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.service_name }}:latest
