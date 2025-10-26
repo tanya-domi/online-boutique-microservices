@@ -1,9 +1,9 @@
 name: Build All Services
 
 on:
-  workflow_dispatch:   # manual trigger
-  schedule:
-    - cron: "0 3 * * *" # every night
+  workflow_dispatch: 
+#   schedule:
+#     - cron: "0 3 * * *" 
 
 jobs:
   adservice:
