@@ -270,7 +270,7 @@ jobs:
       - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./src
+          context: ./cartservice/src
           file: ./src/Dockerfile
           # context: ${{ inputs.build_context }}
           # file: ./${{ inputs.dockerfile_path }}
