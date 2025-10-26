@@ -246,8 +246,8 @@ jobs:
       - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ${{ inputs.build_context }}/src     
-          file: ./src/Dockerfile 
+          context: ${{ inputs.build_context }}    
+          file: ${{ inputs.build_context }}/src/Dockerfile 
           # context: ${{ inputs.build_context }}
           # file: ./${{ inputs.dockerfile_path }}
           push: true
