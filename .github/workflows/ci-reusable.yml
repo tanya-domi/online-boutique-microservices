@@ -84,58 +84,82 @@ jobs:
           retention-days: 7
 
           #.NET
-      - name: Setup .NET
-        if: ${{ inputs.language == 'dotnet' }}
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Cache NuGet packages
-        if: ${{ inputs.language == 'dotnet' }}
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles(format('{0}/**/*.csproj', inputs.build_context)) }}
-
-      - name: Restore and Build .NET project
-        if: ${{ inputs.language == 'dotnet' }}
+      - name: Restore & Build
         run: |
-          cd ${{ inputs.build_context }}
+          cd src
           dotnet restore
-          dotnet build --no-restore --configuration Release
+          dotnet build --configuration Release
 
-      - name: Install trx2junit Tool
-        if: ${{ inputs.language == 'dotnet' }}
+      - name: Run Tests
         run: |
+          cd src
+          mkdir -p TestResults
+          dotnet test --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
+
+      - name: Convert TRX to JUnit
+        run: |
+          cd src
           dotnet tool install --global trx2junit
           echo "/root/.dotnet/tools" >> $GITHUB_PATH
+          trx2junit ./TestResults/*.trx || echo "No TRX files"
 
-      - name: Run .NET Tests
-        if: ${{ inputs.language == 'dotnet' }}
-        run: |
-          cd ${{ inputs.build_context }}
-          mkdir -p TestResults
-          dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
+      # - name: Setup .NET
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: '8.0.x'
 
-      - name: Convert TRX to JUnit XML
-        if: ${{ inputs.language == 'dotnet' }}
-        run: |
-          cd ${{ inputs.build_context }}
-          if compgen -G "./TestResults/*.trx" > /dev/null; then
-            trx2junit ./TestResults/*.trx
-          else
-            echo "No .trx files found in ./TestResults, skipping conversion."
-          fi
+      # - name: Cache NuGet packages
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.nuget/packages
+      #     key: ${{ runner.os }}-nuget-${{ hashFiles(format('{0}/**/*.csproj', inputs.build_context)) }}
 
-      - name: Upload Test Results
-        if: ${{ inputs.language == 'dotnet' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.service_name }}-test-results
-          path: |
-            ${{ inputs.build_context }}/TestResults/*.xml
-            ${{ inputs.build_context }}/TestResults/*.trx
-          retention-days: 7
+      # - name: Restore and Build .NET project
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   run: |
+      #     cd ${{ inputs.build_context }}
+      #     dotnet restore
+      #     dotnet build --no-restore --configuration Release
+
+      # - name: Install trx2junit Tool
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   run: |
+      #     dotnet tool install --global trx2junit
+      #     echo "/root/.dotnet/tools" >> $GITHUB_PATH
+
+      # - name: Run .NET Tests
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   run: |
+      #     cd ${{ inputs.build_context }}
+      #     mkdir -p TestResults
+      #     dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
+
+      # - name: Convert TRX to JUnit XML
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   run: |
+      #     cd ${{ inputs.build_context }}
+      #     if compgen -G "./TestResults/*.trx" > /dev/null; then
+      #       trx2junit ./TestResults/*.trx
+      #     else
+      #       echo "No .trx files found in ./TestResults, skipping conversion."
+      #     fi
+
+      # - name: Upload Test Results
+      #   if: ${{ inputs.language == 'dotnet' }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ inputs.service_name }}-test-results
+      #     path: |
+      #       ${{ inputs.build_context }}/TestResults/*.xml
+      #       ${{ inputs.build_context }}/TestResults/*.trx
+      #     retention-days: 7
 
 
      # Setup Node.js environment
@@ -246,8 +270,10 @@ jobs:
       - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ${{ inputs.build_context }}
-          file: ./${{ inputs.dockerfile_path }}
+          context: ./src
+          file: ./src/Dockerfile
+          # context: ${{ inputs.build_context }}
+          # file: ./${{ inputs.dockerfile_path }}
           push: true
           tags: |
             ghcr.io/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.service_name }}:latest
