@@ -174,7 +174,9 @@ jobs:
 
       - name: Publish to GitHub Packages
         if: ${{ inputs.language == 'node' }}
-        run: npm publish
+        run: |
+          cd ${{ inputs.build_context }}
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
