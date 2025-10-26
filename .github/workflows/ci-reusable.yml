@@ -84,7 +84,7 @@ jobs:
           retention-days: 7
 
           #.NET
-             - name: Setup .NET
+      - name: Setup .NET
         if: ${{ inputs.language == 'dotnet' }}
         uses: actions/setup-dotnet@v4
         with:
