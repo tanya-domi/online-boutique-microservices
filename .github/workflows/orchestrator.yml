@@ -1,0 +1,132 @@
+name: Build All Services
+
+on:
+  workflow_dispatch:   # manual trigger
+  schedule:
+    - cron: "0 3 * * *" # every night
+
+jobs:
+  adservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: adservice
+      dockerfile_path: adservice/Dockerfile
+      build_context: adservice
+      image_name: ghcr.io/${{ github.repository_owner }}/adservice
+      language: java
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+  cartservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: cartservice
+      dockerfile_path: cartservice/Dockerfile
+      build_context: cartservice
+      image_name: ghcr.io/${{ github.repository_owner }}/cartservice
+      language: dotnet
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+  checkoutservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: checkoutservice
+      dockerfile_path: checkoutservice/Dockerfile
+      build_context: checkoutservice
+      image_name: ghcr.io/${{ github.repository_owner }}/checkoutservice
+      language: go
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+    
+  currencyservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: currencyservice
+      dockerfile_path: currencyservice/Dockerfile
+      build_context: currencyservice
+      image_name: ghcr.io/${{ github.repository_owner }}/currencyservice
+      language: node
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+  emailservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: emailservice
+      dockerfile_path: emailservice/Dockerfile
+      build_context: emailservice
+      image_name: ghcr.io/${{ github.repository_owner }}/emailservice
+      language: python
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+  frontend:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: frontend
+      dockerfile_path: frontend/Dockerfile
+      build_context: frontend
+      image_name: ghcr.io/${{ github.repository_owner }}/frontend
+      language: go
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+
+  loadgenerator:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: loadgenerator
+      dockerfile_path: loadgenerator/Dockerfile
+      build_context: loadgenerator
+      image_name: ghcr.io/${{ github.repository_owner }}/loadgenerator
+      language: python
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+
+  paymentservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: paymentservice
+      dockerfile_path: paymentservice/Dockerfile
+      build_context: paymentservice
+      image_name: ghcr.io/${{ github.repository_owner }}/paymentservice
+      language: node
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+  productcatalogservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: productcatalogservice
+      dockerfile_path: productcatalogservice/Dockerfile
+      build_context: productcatalogservice
+      image_name: ghcr.io/${{ github.repository_owner }}/productcatalogservice
+      language: go
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+  recommendationservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: recommendationservice
+      dockerfile_path: recommendationservice/Dockerfile
+      build_context: recommendationservice
+      image_name: ghcr.io/${{ github.repository_owner }}/recommendationservice
+      language: python
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+
+
+  shippingservice:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      service_name: shippingservice
+      dockerfile_path: shippingservice/Dockerfile
+      build_context: shippingservice
+      image_name: ghcr.io/${{ github.repository_owner }}/shippingservice
+      language: go
+      tag: docker-${{ github.run_id }}
+    secrets: inherit
+    

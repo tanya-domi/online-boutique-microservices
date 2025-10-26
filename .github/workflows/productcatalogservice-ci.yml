@@ -1,4 +1,4 @@
-name: CartService CI/CD
+name: ProductCatalogService CI/CD
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
       - 'feature/**'
       - main
     paths:
-      - 'cartservice/**'
+      - 'productcatalogservice/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'cartservice/**'
+      - 'productcatalogservice/**'
 
 permissions:
     id-token: write
@@ -24,11 +24,11 @@ jobs:
   build:
     uses: ./.github/workflows/ci-reusable.yml
     with:
-      service_name: cartservice
-      dockerfile_path: cartservice/Dockerfile
-      build_context: cartservice
-      image_name: ghcr.io/${{ github.repository_owner }}/cartservice
-      language: dotnet
+      service_name: productcatalogservice
+      dockerfile_path: productcatalogservice/Dockerfile
+      build_context: productcatalogservice
+      image_name: ghcr.io/${{ github.repository_owner }}/productcatalogservice
+      language: go
       tag: docker-${{ github.run_id }}
     secrets: inherit
 
@@ -37,8 +37,8 @@ jobs:
 #     needs: build
 #     uses: ./.github/workflows/cd-reusable.yml
 #     with:
-#       service_name: cartservice
-#       image_name: ghcr.io/${{ github.repository_owner }}/cartservice
+#       service_name: productcatalogservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/productcatalogservice
 #     secrets: inherit
 
 #   prod-deploy:
@@ -46,6 +46,6 @@ jobs:
 #     needs: build
 #     uses: ./.github/workflows/cd-reusable.yml
 #     with:
-#       service_name: cartservice
-#       image_name: ghcr.io/${{ github.repository_owner }}/cartservice
+#       service_name: productcatalogservice
+#       image_name: ghcr.io/${{ github.repository_owner }}/productcatalogservice
 #     secrets: inherit
