@@ -91,19 +91,19 @@ jobs:
 
       - name: Restore & Build
         run: |
-          cd src
+          cd cartservice/src
           dotnet restore
           dotnet build --configuration Release
 
       - name: Run Tests
         run: |
-          cd src
+          cd cartservice/src
           mkdir -p TestResults
           dotnet test --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
 
       - name: Convert TRX to JUnit
         run: |
-          cd src
+          cd cartservice/src
           dotnet tool install --global trx2junit
           echo "/root/.dotnet/tools" >> $GITHUB_PATH
           trx2junit ./TestResults/*.trx || echo "No TRX files"
