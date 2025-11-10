@@ -78,12 +78,12 @@ workflow:
 
 1. **Setup OIDC for GitLab → AWS**
 
-   * Terraform configuration in [`oidc-setup`](https://github.com/seunayolu/online-boutique/tree/main/oidc-setup).
+   * Terraform configuration in `oidc-setup`
    * Removes the need for static IAM access keys.
 
 2. **Deploy EKS Infrastructure**
 
-   * Terraform code in [`eksinfra`](https://github.com/seunayolu/online-boutique/tree/main/eksinfra).
+   * Terraform code
    * Uses:
 
      * `terraform-aws-eks` module
@@ -155,27 +155,6 @@ This project helps you learn:
 
 * [ArtifactHub](https://artifacthub.io/)
 
-## 🖥 How to Reproduce
-
-1. Clone the repo:
-
-   ```bash
-   git clone https://github.com/seunayolu/online-boutique.git
-   ```
-
-2. Setup Terraform backends and initialize:
-
-   ```bash
-   cd eksinfra
-   terraform init
-   terraform apply
-   ```
-
-3. Configure GitLab OIDC → AWS roles using the `oidc-setup` folder.
-
-4. Run CI/CD pipelines in GitLab for each microservice repo.
-
-5. Deploy via Helm repo (triggered automatically)
 
 
 
