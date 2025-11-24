@@ -1,17 +1,17 @@
 name: LoadGenerator CI/CD
 
 on:
-  workflow_dispatch:
-    # branches:
-    #   - 'feature/**'
-    #   - main
-    # paths:
-    #   - 'loadgenerator/**'
-  pull_request:
+  push:
     branches:
+      - 'feature/**'
       - main
     paths:
       - 'loadgenerator/**'
+    pull_request:
+       branches:
+         - main
+       paths:
+         - 'loadgenerator/**'
 
 permissions:
     id-token: write
