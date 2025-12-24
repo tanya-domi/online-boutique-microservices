@@ -1,13 +1,13 @@
 name: CartService CI/CD
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - main
-    paths:
-      - 'cartservice/**'
-      - '.github/workflows/**'
+  workflow_dispatch:
+    # branches:
+    #   - 'feature/**'
+    #   - main
+    # paths:
+    #   - 'cartservice/**'
+    #   - '.github/workflows/**'
 
   pull_request:
     branches:
