@@ -1,0 +1,23 @@
+#PodDisruptionBudget for Elasticsearch
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: elasticsearch-pdb
+  namespace: efk
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: elasticsearch
+
+# Note: elector.matchLabels must match the StatefulSet Pod template labels (app: elasticsearch)
+# Alternatively, you could use maxUnavailable: 1 instead of minAvailable: 2:
+
+# spec:
+#   maxUnavailable: 1
+#   selector:
+#     matchLabels:
+#       app: elasticsearch
+
+
+# Both achieve the same effect for a 3-node cluster.

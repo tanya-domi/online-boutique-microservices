@@ -1,0 +1,245 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: adservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: adservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+ 
+    
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cartservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: cartservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-cart-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: tcp-redis
+      path: /metrics
+  selector:
+    matchLabels:
+      app: redis-cart
+  namespaceSelector:
+    matchNames:
+      - boutique
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: checkoutservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: checkoutservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+
+ 
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: currencyservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: currencyservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+ 
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: emailservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: emailservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+ 
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: frontend-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: http
+      path: /metrics
+  selector:
+    matchLabels:
+      app: frontend
+  namespaceSelector:
+    matchNames:
+      - boutique
+ 
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: paymentservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: adservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: productcatalogservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: productcatalogservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: recommendationservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: recommendationservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: shippingservice-service-monitor
+  namespace: boutique
+  labels:
+    release: prometheus
+    app: prometheus
+spec:
+  jobLabel: job
+  endpoints:
+    - interval: 30s
+      port: grpc
+      path: /metrics
+  selector:
+    matchLabels:
+      app: shippingservice
+  namespaceSelector:
+    matchNames:
+      - boutique
+ 

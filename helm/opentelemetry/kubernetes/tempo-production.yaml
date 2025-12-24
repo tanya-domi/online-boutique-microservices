@@ -1,0 +1,67 @@
+# mode: distributed
+
+# tempo:
+#   metricsGenerator:
+#     # The metricsGenerator component converts traces into Prometheus metrics.
+#     enabled: true
+#     remoteWriteUrl: "http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write"
+#     overrides:
+#       defaults:
+#         metrics_generator:
+#           processors:
+#             - service-graphs
+#             - span-metrics
+
+# replicaCount: 1
+
+# distributor:
+#   replicaCount: 3
+#   receivers:
+#     otlp:
+#       protocols:
+#         grpc:
+#           endpoint: 0.0.0.0:4317
+#         http:
+#           endpoint: 0.0.0.0:4318
+#   resources:
+#     requests:
+#       cpu: 500m
+#       memory: 1Gi
+
+# ingester:
+#   replicaCount: 3
+#   wal:
+#     enabled: true
+#     dir: /data/wal
+#   resources:
+#     requests:
+#       cpu: 500m
+#       memory: 2Gi
+#   statefulset:
+#     volumeClaimTemplate:
+#       storageClassName: standard  # block storage
+#       accessModes:
+#         - ReadWriteOnce
+#       resources:
+#         requests:
+#           storage: 50Gi
+
+# queryFrontend:
+#   replicaCount: 2
+#   resources:
+#     requests:
+#       cpu: 500m
+#       memory: 1Gi
+
+# compactor:
+#   enabled: true
+#   resources:
+#     requests:
+#       cpu: 250m
+#       memory: 512Mi
+
+# storage:
+#   trace:
+#     backend: gcs
+#     gcs:
+#       bucket: tempo-traces-level-ruler-479817

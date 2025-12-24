@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: efk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.13.0
+        ports:
+        - containerPort: 5601
+        volumeMounts:
+        - name: kibana-config
+          mountPath: /usr/share/kibana/config/kibana.yml
+          subPath: kibana.yml   # IMPORTANT!
+      volumes:
+      - name: kibana-config
+        configMap:
+          name: kibana-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: efk
+spec:
+  type: LoadBalancer #ClusterIP
+  ports:
+  - port: 5601
+    targetPort: 5601
+  selector:
+    app: kibana
+
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: kibana-ingress
+#   namespace: efk
+#   annotations:
+#     kubernetes.io/ingress.class: "gce"
+#     networking.gke.io/managed-certificates: "kibana-cert"
+# spec:
+#   rules:
+#   - host: kibana.example.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: kibana
+#             port:
+#               number: 5601
+#   tls:
+#   - hosts:
+#     - kibana.example.com
+#     secretName: kibana-tls

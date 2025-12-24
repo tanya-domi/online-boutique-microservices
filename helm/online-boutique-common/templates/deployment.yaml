@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.deploymentName }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.appLabel }}
 spec:
@@ -15,47 +16,181 @@ spec:
       labels:
         app: {{ .Values.appLabel }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- with .Values.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    
     spec:
-      serviceAccountName: {{ .Values.serviceAccountName }}
+       {{- if .Values.shareProcessNamespace }}
+      shareProcessNamespace: true
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: false
+        runAsUser: 1000
+
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
       containers:
-        - name: {{ .Values.appLabel }}
+        {{- range .Values.containers }}
+        - name: {{ .name }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+
           securityContext:
-            allowPrivilegeEscalation: false
+            allowPrivilegeEscalation: true
+            privileged: true
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+
+          {{- with .ports }}
           ports:
-            - containerPort: {{ .Values.containerPort }}
-              protocol: TCP
-          readinessProbe:
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            httpGet:
-              path: "{{ .Values.readinessProbe.path }}"
-              port: {{ .Values.containerPort }}
-              httpHeaders:
-{{ toYaml .Values.readinessProbe.httpHeaders | indent 14 }}
-          livenessProbe:
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            httpGet:
-              path: "{{ .Values.livenessProbe.path }}"
-              port: {{ .Values.containerPort }}
-              httpHeaders:
-{{ toYaml .Values.livenessProbe.httpHeaders | indent 14 }}
+            {{- range . }}
+            - containerPort: {{ .containerPort }}
+            {{- end }}
+          {{- end }}
+
+          {{- if or .env $.Values.global.configMapName }}
           env:
-            - name: PORT
-              value: "{{ .Values.port }}"
-          envFrom:
-            - configMapRef:
-                name: {{ .Values.global.configMapName }}
+            {{- if .env }}
+            {{- range .env }}
+            - name: {{ .name }}
+              value: "{{ .value }}"
+            {{- end }}
+            {{- end }}
+
+            {{- if $.Values.global.configMapName }}
+            - name: ENABLE_PROFILER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: ENABLE_PROFILER
+            {{- end }}
+
+            {{- if $.Values.env }}
+              {{- if $.Values.env.productcatalogservice }}
+            - name: PRODUCT_CATALOG_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: PRODUCT_CATALOG_SERVICE_ADDR
+              {{- end }}
+
+              {{- if $.Values.env.currencyservice }}
+            - name: CURRENCY_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: CURRENCY_SERVICE_ADDR
+              {{- end }}
+
+              {{- if $.Values.env.cartservice }}
+            - name: CART_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: CART_SERVICE_ADDR
+              {{- end }}
+
+              {{- if $.Values.env.recommendationservice }}
+            - name: RECOMMENDATION_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: RECOMMENDATION_SERVICE_ADDR
+              {{- end }}
+
+              {{- if $.Values.env.shippingservice }}
+            - name: SHIPPING_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: SHIPPING_SERVICE_ADDR
+              {{- end }}
+
+              {{- if $.Values.env.checkoutservice }}
+            - name: CHECKOUT_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: CHECKOUT_SERVICE_ADDR
+              {{- end }}
+
+              {{- if $.Values.env.adservice }}
+            - name: AD_SERVICE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $.Values.global.configMapName }}
+                  key: AD_SERVICE_ADDR
+              {{- end }}
+            {{- end }}
+          {{- end }}
+
+          {{- with .livenessProbe }}
+          livenessProbe:
+            initialDelaySeconds: {{ .initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 1 }}
+            failureThreshold: {{ .failureThreshold | default 3 }}
+            {{- if .httpGet }}
+            httpGet:
+              path: {{ .httpGet.path }}
+              port: {{ .httpGet.port }}
+              {{- with .httpGet.httpHeaders }}
+              httpHeaders:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            {{- else if .grpc }}
+            grpc:
+              port: {{ .grpc.port }}
+              {{- if .grpc.service }}
+              service: {{ .grpc.service }}
+              {{- end }}
+            {{- else if .tcpSocket }}
+            tcpSocket:
+              port: {{ .tcpSocket.port }}
+            {{- end }}
+          {{- end }}
+
+          {{- with .readinessProbe }}
+          readinessProbe:
+            initialDelaySeconds: {{ .initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 1 }}
+            failureThreshold: {{ .failureThreshold | default 3 }}
+            {{- if .httpGet }}
+            httpGet:
+              path: {{ .httpGet.path }}
+              port: {{ .httpGet.port }}
+              {{- with .httpGet.httpHeaders }}
+              httpHeaders:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            {{- else if .grpc }}
+            grpc:
+              port: {{ .grpc.port }}
+              {{- if .grpc.service }}
+              service: {{ .grpc.service }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+
+          {{- with .resources }}
           resources:
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
-            limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
-{{- end -}}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+{{- end }}

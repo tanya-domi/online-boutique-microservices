@@ -1,40 +1,31 @@
 deploymentName: paymentservice-deployment
 serviceName: paymentservice
+
 appLabel: paymentservice
 appName: paymentservice
-serviceAccountName: paymentservice
+jobLabel: paymentservice
 
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/seunayolu/gitops-productcatalogservice/paymentservice
-  tag: "8ae99fb2"
+  repository: ghcr.io/tanya-domi/paymentservice
+  tag: "docker-18816493323"
   pullPolicy: IfNotPresent
   imagePullSecrets:
     - name: my-registry-key
 
-securityContext:
-  fsGroup: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  runAsUser: 1000
+annotations:
+  instrumentation.opentelemetry.io/inject-nodejs: "app-instrumentation"
 
 containers:
   - name: server
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      privileged: false
-      readOnlyRootFilesystem: true
     ports:
-    - containerPort: 50051
+      - containerPort: 50051
     env:
-    - name: PORT
-      value: "50051"
-    - name: DISABLE_PROFILER
-      value: "1"
+      - name: PORT
+        value: "50051"
+      - name: DISABLE_PROFILER
+        value: "1"
     readinessProbe:
       grpc:
         port: 50051
@@ -50,11 +41,14 @@ containers:
         memory: 128Mi
 
 service:
+  enabled: true
   type: ClusterIP
-  ports:
-  - name: grpc
-    port: 50051
-    targetPort: 50051
+  name: grpc
+  port: 50051
+  targetPort: 50051
 
-createServiceAccount: true
-profiler_enabled:  false
+serviceAccount:
+  create: true
+  name: "paymentservice"
+
+profiler_enabled: "false"

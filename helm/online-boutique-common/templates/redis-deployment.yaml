@@ -1,0 +1,56 @@
+{{- define "common.redis-deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.appLabel }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appLabel }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appLabel }}
+    spec:
+    {{- if not .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+    {{- end }}
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: redis
+          image: "{{ .Values.redisName.image.repository }}:{{ .Values.redisName.image.tag }}"
+          imagePullPolicy: {{ .Values.redisName.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ "ALL" ]
+            privileged: false
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: {{ .Values.redisName.port }}
+          readinessProbe:
+            periodSeconds: 5
+            tcpSocket:
+              port: {{ .Values.redisName.port }}
+          livenessProbe:
+            periodSeconds: 5
+            tcpSocket:
+              port: {{ .Values.redisName.port }}
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+          resources:
+            {{- toYaml .Values.redisName.resources | nindent 12 }}
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+{{- end }}
+

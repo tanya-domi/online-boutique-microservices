@@ -1,38 +1,32 @@
 deploymentName: frontend-deployment
 serviceName: frontend
+
 appLabel: frontend
 appName: frontend
-serviceAccountName: frontend
+jobLabel: frontend
 
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/seunayolu/gitops-frontend/frontend
-  tag: "0ada6df3"
+  repository: ghcr.io/tanya-domi/frontend
+  tag: "docker-18816493323"
   pullPolicy: IfNotPresent
   imagePullSecrets:
     - name: my-registry-key
 
 annotations:
   sidecar.istio.io/rewriteAppHTTPProbers: "true"
+  instrumentation.opentelemetry.io/inject-go: "app-instrumentation"
+  instrumentation.opentelemetry.io/inject-sdk: "app-instrumentation"
+  instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/src/server"
 
-securityContext:
-  fsGroup: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  runAsUser: 1000
-
+shareProcessNamespace: true
 containers:
   - name: server
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      privileged: false
-      readOnlyRootFilesystem: true
     ports:
       - containerPort: 8080
+    securityContext:
+          privileged: true
     readinessProbe:
       initialDelaySeconds: 10
       httpGet:
@@ -68,8 +62,8 @@ containers:
         value: "adservice:9555"
       - name: SHOPPING_ASSISTANT_SERVICE_ADDR
         value: "shoppingassistantservice:80"
-      - name: ENABLE_PROFILER
-        value: "0"
+      - name: LOG_FORMAT
+        value: json
     resources:
       requests:
         cpu: 100m
@@ -79,27 +73,23 @@ containers:
         memory: 128Mi
 
 service:
-  type: ClusterIP
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8080
-
-ingress:
   enabled: true
-  name: online-boutique
-  className: alb
-  scheme: internet-facing
-  targetType: ip
-  certificateArn: arn:aws:acm:eu-north-1:381492137122:certificate/4a115c36-439e-4981-8be2-6020324e3400
-spec:
-  listenPorts: '[{"HTTP": 80}, {"HTTPS": 443}]'
-  sslRedirect: "443"
-  groupName: online-boutique
-  host: online-boutique-dev.dominicsheytanya.org
-  backend:
-    serviceName: frontend
-    portNumber: 80
+  type: LoadBalancer
+  name: http
+  port: 80
+  targetPort: 8080
 
-createServiceAccount: true
-profiler_enabled:  true
+serviceAccount:
+  create: true
+  name: "frontend"
+
+profiler_enabled: "true"
+
+
+  # online-boutique-common:
+  #   ingress:
+  #     enabled: true
+  #     name: online-boutique
+  #     host: frontend.dominicsheytanya.org
+  #     serviceName: frontend
+  #     servicePort: 80

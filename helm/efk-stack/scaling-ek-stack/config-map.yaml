@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-config
+  namespace: efk
+data:
+  kibana.yml: |
+    server.port: 5601
+    server.host: "0.0.0.0"
+    elasticsearch.hosts:
+      - "http://elasticsearch-0.elasticsearch:9200"
+      - "http://elasticsearch-1.elasticsearch:9200"
+      - "http://elasticsearch-2.elasticsearch:9200"
+    elasticsearch.ssl.verificationMode: none
+
+
+ # Point Kibana to the ES cluster
+

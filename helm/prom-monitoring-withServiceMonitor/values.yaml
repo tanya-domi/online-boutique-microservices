@@ -1,0 +1,37 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    scrapeTimeout: "30s"
+    scrapeInterval: "30s"
+
+grafana:
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: true
+
+  additionalDataSources:
+    # Elasticsearch for Logs (EFK)
+    - name: Elasticsearch
+      type: elasticsearch
+      access: proxy
+      url: http://elasticsearch.efk.svc.cluster.local:9200
+      jsonData:
+        interval: Daily
+        timeField: "@timestamp"
+
+    # Tempo for Traces
+    - name: Tempo
+      type: tempo
+      access: proxy
+      url: http://tempo-query-frontend.tempo.svc.cluster.local:3100
+      jsonData:
+        tracesToLogsV2:
+          datasourceUid: "Elasticsearch"   
+        serviceMap:
+          datasourceUid: "Prometheus"
+        nodeGraph:
+          enabled: true
+

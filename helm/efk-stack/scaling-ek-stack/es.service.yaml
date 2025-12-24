@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch
+  namespace: efk
+spec:
+  clusterIP: None
+  selector:
+    app: elasticsearch
+  ports:
+  - port: 9200
+    name: http
+  - port: 9300
+    name: transport

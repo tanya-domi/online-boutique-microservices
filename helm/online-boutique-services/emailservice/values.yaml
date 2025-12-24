@@ -1,33 +1,24 @@
 deploymentName: emailservice-deployment
 serviceName: emailservice
+
 appLabel: emailservice
 appName: emailservice
-serviceAccountName: emailservice
+jobLabel: emailservice
 
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/seunayolu/gitops-currencyservice/currencyservice
-  tag: "89d6f18c"
+  repository: ghcr.io/tanya-domi/emailservice
+  tag: "docker-18816493323"
   pullPolicy: IfNotPresent
   imagePullSecrets:
     - name: my-registry-key
 
-securityContext:
-  fsGroup: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  runAsUser: 1000
+annotations:
+  instrumentation.opentelemetry.io/inject-python: app-instrumentation
 
 containers:
   - name: server
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      privileged: false
-      readOnlyRootFilesystem: true
     ports:
       - containerPort: 8080
     env:
@@ -52,11 +43,14 @@ containers:
         memory: 128Mi
 
 service:
+  enabled: true
   type: ClusterIP
-  ports:
-    - name: grpc
-      port: 5000
-      targetPort: 8080
+  name: grpc
+  port: 5000
+  targetPort: 8080
 
-createServiceAccount: true
-profiler_enabled:  false
+serviceAccount:
+  create: true
+  name: "emailservice"
+
+profiler_enabled: "false"

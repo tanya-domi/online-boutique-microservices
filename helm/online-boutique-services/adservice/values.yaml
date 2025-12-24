@@ -1,68 +1,58 @@
 deploymentName: adservice-deployment
 serviceName: adservice
+
 appLabel: adservice
 appName: adservice
-serviceAccountName: adservice
+jobLabel: adservice
 
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/seunayolu/gitops-javacode/adservice
-  tag: "bbe34b04"
+  repository: ghcr.io/tanya-domi/adservice
+  tag: "docker-18816493323"
   pullPolicy: IfNotPresent
   imagePullSecrets:
     - name: my-registry-key
-
 terminationGracePeriodSeconds: 5
 
-securityContext:
-  fsGroup: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  runAsUser: 1000
+annotations:
+  instrumentation.opentelemetry.io/inject-java: "app-instrumentation"
 
 containers:
   - name: server
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      privileged: false
-      readOnlyRootFilesystem: true
     ports:
-    - containerPort: 9555
+      - containerPort: 9555
     env:
-    - name: PORT
-      value: "9555"
-    resources:
-      requests:
-        cpu: 200m
-        memory: 180Mi
-      limits:
-        cpu: 300m
-        memory: 300Mi
+      - name: PORT
+        value: "9555"
     readinessProbe:
-      initialDelaySeconds: 20
+      initialDelaySeconds: 60
       periodSeconds: 15
       grpc:
         port: 9555
     livenessProbe:
-      initialDelaySeconds: 20
+      initialDelaySeconds: 60
       periodSeconds: 15
       grpc:
         port: 9555
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
 
 service:
+  enabled: true
   type: ClusterIP
-  ports:
-  - name: grpc
-    port: 9555
-    targetPort: 9555
+  name: grpc
+  port: 9555
+  targetPort: 9555
 
-createServiceAccount: true
-profiler_enabled:  false
-  
-
+serviceAccount:
+  create: true
+  name: "adservice"
 
 
+profiler_enabled: "false"
