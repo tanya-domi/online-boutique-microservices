@@ -46,17 +46,17 @@
 </script>
 
 
-// mothod 1 Using ES Module import syntax
+// mothod 1 . Using ES Module import syntax
 
 // import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 // import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 // import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 // // etc...
-
 // Cons
 // Requires a build step: Online Boutique frontend is a Go server serving static HTML/JS
 
-// 2️⃣ Using UMD <script> tags (via CDN)
+// Method 2. Using UMD <script> tags (via CDN)
+
 // <script src="https://unpkg.com/@opentelemetry/sdk-trace-web@1.25.1/build/umd/index.min.js"></script>
 // <script src="https://unpkg.com/@opentelemetry/exporter-trace-otlp-http@0.52.1/build/umd/index.min.js"></script>
 // <script>
