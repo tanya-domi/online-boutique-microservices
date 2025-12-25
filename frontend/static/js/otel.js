@@ -21,8 +21,8 @@
   const { ZoneContextManager } = opentelemetry.contextZone;
 
   const exporter = new OTLPTraceExporter({
-    url: "http://136.114.250.221:4318/v1/traces"
-  });
+  url: "/v1/traces" 
+});
 
   const provider = new WebTracerProvider({
     resource: new Resource({
