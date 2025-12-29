@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// Added auto Otel Intrumentation injection to dockerfile
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;

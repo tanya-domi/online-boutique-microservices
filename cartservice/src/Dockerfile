@@ -54,7 +54,7 @@ FROM alpine:latest AS otel-downloader
 ARG OTEL_VERSION=1.11.0
 WORKDIR /otel
 RUN apk add --no-cache curl tar
-# Download for Linux x64 (Standard GKE Node)
+# Download for Linux x64
 RUN curl -L https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v${OTEL_VERSION}/opentelemetry-dotnet-instrumentation-linux-x64.tar.gz -o otel.tar.gz && \
     mkdir /otel-dotnet-auto && \
     tar -xzf otel.tar.gz -C /otel-dotnet-auto
