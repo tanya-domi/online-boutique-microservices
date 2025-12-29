@@ -41,58 +41,37 @@
 # ENTRYPOINT ["/app/cartservice"]
 
 
-# --- STAGE 1: Build the .NET 9 Application ---
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0.101-noble@sha256:1f13e67d295e02abdfd187c341f887442bad611eda536766172ced401fc8b9fa AS builder
+# Build stage
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0.101-noble AS builder
 ARG TARGETARCH
 WORKDIR /app
-
 COPY cartservice.csproj .
 RUN dotnet restore cartservice.csproj -a $TARGETARCH
-
 COPY . .
 RUN dotnet publish cartservice.csproj \
-    -p:PublishSingleFile=true \
     -a $TARGETARCH \
-    --self-contained true \
-    -p:PublishTrimmed=true \
-    -p:TrimMode=full \
-    -c release \
+    -c Release \
     -o /cartservice
 
-# --- STAGE 2: Download OTel Agent (Stable Version 1.7.0) ---
-FROM alpine:latest AS otel-downloader
-WORKDIR /otel
-RUN apk add --no-cache curl tar
-
-# Use version 1.7.0 - this URL is verified and active
-RUN curl -fSL -A "Mozilla/5.0" \
-    https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v1.7.0/opentelemetry-dotnet-instrumentation-linux-x64.tar.gz \
-    -o otel.tar.gz && \
-    mkdir -p /otel-dotnet-auto && \
-    tar -xzf otel.tar.gz -C /otel-dotnet-auto
-
-# --- STAGE 3: Final Chiseled Runtime ---
-FROM mcr.microsoft.com/dotnet/runtime-deps:9.0.1-noble-chiseled@sha256:6f7466eda39e24efaf7eab2325e15d776a685d13cc93b4ea0cde9ee4f7982210 AS runtime
-
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:9.0.1-noble
 WORKDIR /app
 COPY --from=builder /cartservice .
-COPY --from=otel-downloader /otel-dotnet-auto /otel-dotnet-auto
 
-EXPOSE 7070
-ENV DOTNET_EnableDiagnostics=0 \
-    ASPNETCORE_HTTP_PORTS=7070
+# OpenTelemetry auto-instrumentation
+USER root
+ARG OTEL_VERSION=1.11.0
+ADD https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v${OTEL_VERSION}/otel-dotnet-auto-install.sh otel-dotnet-auto-install.sh
+RUN apt-get update && apt-get install -y curl unzip && \
+    OTEL_DOTNET_AUTO_HOME=/otel-dotnet-auto sh otel-dotnet-auto-install.sh && \
+    rm -rf /var/lib/apt/lists/*
 
-# OTel Environment Variables
-ENV CORECLR_ENABLE_PROFILING="1" \
-    CORECLR_PROFILER="{846759BB-039D-4184-B97C-2234605799E9}" \
-    CORECLR_PROFILER_PATH="/otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so" \
-    DOTNET_STARTUP_HOOKS="/otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll" \
-    OTEL_DOTNET_AUTO_HOME="/otel-dotnet-auto" \
-    OTEL_SERVICE_NAME="cartservice" \
-    OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector.grafana.svc.cluster.local:4317" \
-    OTEL_TRACES_EXPORTER="otlp" \
-    OTEL_METRICS_EXPORTER="otlp" \
-    OTEL_LOGS_EXPORTER="otlp"
+ENV DOTNET_STARTUP_HOOKS=/otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
+ENV CORECLR_ENABLE_PROFILING=1
+ENV CORECLR_PROFILER={918728DD-259F-4A6A-AC2B-B85E1B658318}
+ENV CORECLR_PROFILER_PATH=/otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
+ENV ASPNETCORE_HTTP_PORTS=7070
 
 USER 1000
-ENTRYPOINT ["/app/cartservice"]
+EXPOSE 7070
+ENTRYPOINT ["dotnet", "cartservice.dll"]
