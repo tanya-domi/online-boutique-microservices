@@ -267,15 +267,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Frontend Docker image
+      - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./cartservice
+          file: ./cartservice/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ secrets.REGISTRY_USERNAME }}/frontend:latest
-            ghcr.io/${{ secrets.REGISTRY_USERNAME }}/frontend:${{ inputs.tag }}
+            ghcr.io/${{ secrets.REGISTRY_USERNAME }}/cartservice:latest
+            ghcr.io/${{ secrets.REGISTRY_USERNAME }}/cartservice:${{ inputs.tag }}
 
       # - name: Build and Push Docker image
       #   uses: docker/build-push-action@v6
