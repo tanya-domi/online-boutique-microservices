@@ -61,12 +61,14 @@ RUN dotnet publish cartservice.csproj \
 
 # --- STAGE 2: Download OTel Agent ---
 FROM alpine:latest AS otel-downloader
-ARG OTEL_VERSION=1.11.0
+# Hardcoding version in URL for maximum reliability
 WORKDIR /otel
 RUN apk add --no-cache curl tar
 
-# FIXED URL: Added '/download/' to the path
-RUN curl -L https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v${OTEL_VERSION}/opentelemetry-dotnet-instrumentation-linux-x64.tar.gz -o otel.tar.gz && \
+# Use -f (fail on error), -L (follow redirect), and a User-Agent to ensure the download works
+RUN curl -fSL -A "Mozilla/5.0" \
+    https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v1.11.0/opentelemetry-dotnet-instrumentation-linux-x64.tar.gz \
+    -o otel.tar.gz && \
     mkdir -p /otel-dotnet-auto && \
     tar -xzf otel.tar.gz -C /otel-dotnet-auto
 
